@@ -1,8 +1,8 @@
 ---
 title: Higher order functions, how, why and what not to do.
 date: 2020-12-31 15:46:00 +0100
-categories: [Android, Kotlin]
-tags: [Android, Kotlin]
+categories: [Kotlin]
+tags: [Kotlin]
 ---
 
 <img src="https://kotlinlang.org/assets/images/open-graph/kotlin_250x250.png" class="center">

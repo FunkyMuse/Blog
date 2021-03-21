@@ -4,7 +4,7 @@ gem "jekyll", ">=3.8.6"
 gem 'jemoji'
 gem "jekyll-theme-chirpy"
 
-# Official Plugins
+
 group :jekyll_plugins do
   gem "jekyll-paginate"
   gem "jekyll-redirect-from"

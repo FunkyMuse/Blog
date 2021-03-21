@@ -5,7 +5,7 @@ categories: [Gradle, Android]
 tags: [Android, Gradle, Optimizations]
 ---
 
-<img src="https://1.bp.blogspot.com/-i0iss3nbtgw/XwLfZFuCQkI/AAAAAAAAw9I/IIDLtJnM4DYtaUjLfv1b778Mdhkph1L6wCK4BGAsYHg/s550/e750tqxcihi11.jpg" class="center">
+<img src="/assets/img/1/1.jpg" class="center">
 
 We've all came to a decision to go and do something else while waiting for the build.gradle to finish, something like: people get married or divorced, learn to fly a plane, build a rocket ship out of LEGO or take one hour poo.
 
@@ -16,11 +16,12 @@ Well this should look familiar to you if you profile your build with
 ```groovy
 ./gradlew --profile --offline --rerun-tasks assembleDebug
 ```
+<img src="/assets/img/1/2.png" class="center">
 
 
 24 seconds, that's not good.
 
-
+<img src="/assets/img/1/3.jpeg" class="center">
 
 Alright here we go configuring gradle.
 
@@ -92,6 +93,9 @@ org.gradle.unsafe.watch-fs=true
 org.gradle.unsafe.configuration-cache=true 
 ```
 
+<img src="/assets/img/1/4.jpg" class="center">
+
+
 If you decide not to use webP images and stick to PNGs
 ```groovy
                 buildTypes {
@@ -111,6 +115,9 @@ Never in your life write dependency using the + format, it adds to the build tim
 ```groovy
 implementation 'androidx.appcompat:appcompat:1.+'
 ```
+
+<img src="/assets/img/1/5.jpg" class="center">
+
 
 Many of us use Crashlytics or some form of crash reporting tool, I built my own called Crashy to avoid the slowdowns, leveraging AndroidX Startup and over-configuration of Crashyltics, how can you configure Crashlytics?
 Well, no worries, there you go.
@@ -163,6 +170,8 @@ If you don't need crash reporting for your debug build,you can speed up your bui
 
 
 And now let's see
+
+<img src="/assets/img/1/6.png" class="center">
 
 
 We have 4secs build time, including Dagger's kapt, Nav's kapt etc..

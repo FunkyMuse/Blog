@@ -24,12 +24,12 @@ From the docs we have
 public @interface Singleton {}
 ```
 
-@**Singleton** makes sure you have only one instance of your class in the Dagger graph and it always returns the same instance, it's an annotation @Singleton which is misleading,
+@**Singleton** doesn't makes sure you have only one instance of your class in the Dagger graph and it always returns the same instance, it's an annotation @Singleton which is misleading,
 
 @**Singleton** != Singleton pattern
 
 Scoping is a mechanism defined in *JSR-330*.
-What does this mean is that, if you scope annotate something, the injector (Dagger) will retain (cache) the instance for possible reusability whenever injection happens.
+What that means is that if you scope annotate something, the injector (Dagger) will retain (cache) the instance for possible reusability whenever injection happens.
 
 *JSR-330* has one predefined scope annotation — @Singleton
 
@@ -70,6 +70,7 @@ interface OurFirstComponent {
 ```
 
 now you think okay, we do have a singleton yaay
+
 <img src="/assets/img/dagger/4/not.gif" class="center">
 
 Let's create another activity for demonstration

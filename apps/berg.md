@@ -4,8 +4,10 @@ title: Berg - watch free HD YTS yify movies & watch free TV shows
 layout: post
 ---
 
-Download the latest version from [here](https://drive.google.com/drive/folders/16RI16Bq875K14DsZSTxf0twRC6HAYgKG?usp=sharing) or [here](https://www.mediafire.com/folder/befimt8chywfx/Berg)
-
+<div align="center">
+Download the latest version from <a href="https://drive.google.com/drive/folders/16RI16Bq875K14DsZSTxf0twRC6HAYgKG?usp=sharing">here</a> or
+<a href="https://www.mediafire.com/folder/befimt8chywfx/Berg">here</a>
+</div>
 
 ## TV screenshots
 ---
@@ -32,7 +34,10 @@ Download the latest version from [here](https://drive.google.com/drive/folders/1
 <img src="/assets/img/apps/berg/11.png" width="33%">
 ## Download
 ---
-Download the latest version from [here](https://drive.google.com/drive/folders/16RI16Bq875K14DsZSTxf0twRC6HAYgKG?usp=sharing) or [here](https://www.mediafire.com/folder/befimt8chywfx/Berg)
+<div align="center">
+Download the latest version from <a href="https://drive.google.com/drive/folders/16RI16Bq875K14DsZSTxf0twRC6HAYgKG?usp=sharing">here</a> or
+<a href="https://www.mediafire.com/folder/befimt8chywfx/Berg">here</a>
+</div>
 
 ## App
 
@@ -117,4 +122,7 @@ This application is just a way to organize, browse, view, and find videos on web
 
 ## Download bottom
 ---
-Download the latest version from [here](https://drive.google.com/drive/folders/16RI16Bq875K14DsZSTxf0twRC6HAYgKG?usp=sharing) or [here](https://www.mediafire.com/folder/befimt8chywfx/Berg)
+<div align="center">
+Download the latest version from <a href="https://drive.google.com/drive/folders/16RI16Bq875K14DsZSTxf0twRC6HAYgKG?usp=sharing">here</a> or
+<a href="https://www.mediafire.com/folder/befimt8chywfx/Berg">here</a>
+</div>

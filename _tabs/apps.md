@@ -14,4 +14,4 @@ order: 4
 8. [TorrX, torrent search engine](/torrx)
 9. [Sekttor, security audit](/sekktor)
 10. [Crypto tracker, crypto currencies tracker](/crypto-tracker)
-11. [Vigilante, an  that focuses on your privacy](https://github.com/FunkyMuse/Vigilante)
+11. [Vigilante, an app that focuses on your privacy](https://github.com/FunkyMuse/Vigilante)

@@ -128,7 +128,19 @@ class MainActivity : AppCompatActivity() {
 
 Uhm, the Logger was initialized two times, confusing right?
 
-Let's demonstrate a real singleton
+Let's demonstrate a real singleton (we won't be using an enum for this demonstration).
+
+Enum solve problems that arise with (de)serialization and reflection:
+
+1. In order to serialize a singleton class,
+we must implement a Serializable interface, also when deserializing a class, 
+new instances are created. 
+It doesn't matter if the constructor is private or not there can be more than one instance of the same 
+singleton class.
+
+2. Using Reflection you can change the private access modifier of 
+the constructor to public and you can make a new instance therefore
+making more than one object instance.
 
 ```kotlin
 object TestSingleton {
@@ -218,12 +230,24 @@ class SecondActivity : AppCompatActivity() {
 ```
 <img src="/assets/img/dagger/4/3.png" class="center">
 
-We've achieved some form of *singleton*, but not really, once process death restoration happens, the objects annotated with @**Singleton** are re-created again.
+We've achieved some form of *singleton*, but not really, once process death restoration happens, 
+the objects annotated with @**Singleton** are re-created again and also everything else as well.
 
-In an Android world, **Singleton** doesn't really exist, it's a lie.
+In the programming world, an object created only once and never again doesn't exist (unless you never 
+switch your machine off, which is impossible),
+once your process dies, everything else that was spawned in it's lifetime is gone too,
+1 process creation = 1 Singleton instantiation.
+
+We gotta be careful with the allocations, they can be costly, we'll see more
+about that in a future blog post.
 
 P.S: 
-When Dagger creates the *implementation* behind the scenes it double checks for the component's initialization once you annotate something with a scope, in our case @**Singleton** or any other custom scope (we'll see how to create that later on) you'll use in the future, meanig it caches the value that you scope (as we've mentioned in the beginning), as for homework you can see how they've [implemented](https://github.com/google/dagger/blob/master/java/dagger/internal/DoubleCheck.java) it.
+When Dagger creates the *implementation* behind the scenes it double checks for the 
+component's initialization once you annotate 
+something with a scope, in our case @**Singleton** or any other 
+custom scope (we'll see how to create that later on) you'll use in the future, 
+meanig it caches the value that you scope (as we've mentioned in the beginning), 
+as for homework you can see how they've [implemented](https://github.com/google/dagger/blob/master/java/dagger/internal/DoubleCheck.java) it.
 
 Thanks for the wholeharted attention.
 

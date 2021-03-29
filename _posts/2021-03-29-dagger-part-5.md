@@ -107,9 +107,9 @@ We've learnt about a new citizen in the Dagger world
 a factory has to create our component, because our component needs a parameter
 in this case a *Context*, in order to create our **SharedPreferencesManager**, because Dagger doesn't know how to get a *Context* we have to provide it to Dagger ourselves.
 
-Inside we have an interface which is essentially our factory and one function that has one important function called `create` which returns (creates) the `SingletonComponent` but with a parameter of the type we wanted, in our case a `Context`.
+Inside we have an interface which is essentially our factory and one function important function called `create` which returns (creates) the `SingletonComponent` but with a parameter of the type we wanted, in our case a `Context`.
 
-Also there's `@BindsInstance`, this annotation knows about the type of the parameter in our case `Context` and later on whenever we request this `Context` within our `@Singleton` scope we'll have it provided to us by Dagger we don't have to do anything else (because this runtime variable is tied to the component's scope that binds it, in our case *SingletonComponent*).
+Also there's `@BindsInstance`, this annotation knows about the type of the parameter in our case `Context` and later on whenever we request this `Context` within our `@Singleton` scope we'll have it provided to us by Dagger we don't have to do anything else (because this runtime variable is tied to the component's scope that binds it, in our case *SingletonComponent* and it's children, more about that later on).
 
 As I mentioned earlier, Dagger would be far easier without Android's runtime, but `Context` is a runtime variable which is available once the app's started and that's what complicates things.
 
@@ -126,11 +126,11 @@ inside *DaggerIsEasyApplication* and after `onCreate()` just right before the `s
         }
     }
 ```
-now when we launch the application, we can see the log
+now when we launch the application, we see the following log
 
 <img src="/assets/img/dagger/5/1.png" class="center">
 
-when we rerun the app, we won't see the log because we've set it already.
+when we rerun the app, we won't see the log.
 
 Let's say we wanted to get that same **SharedPreferencesManager** in our `MainActivity`
 ```kotlin
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 ```
-let's run the code and see it crash
+run the code and see it crash 💥
 ```kotlin
 Caused by: kotlin.UninitializedPropertyAccessException: lateinit property sharedPreferencesManager has not been initialized
 ```
@@ -177,7 +177,7 @@ class DaggerIsEasyApplication : Application() {
     }
 }
 ```
-Now `SingletonComponent` is a `@Singleton` scoped, that means we've gotta come with our own scoping if we need something inside an *Activity*, so we go ahead and create our own.
+Now `SingletonComponent` is `@Singleton` scoped, that means we've gotta come with our own scoping if we need something inside an *Activity*.
 
 ```kotlin
 @Scope
@@ -187,7 +187,8 @@ annotation class ActivityScoped
 ```
 
 as we know that we need an Activity component as well, we create one too,
-now this time we annotate it with `@Subcomponent` and our own scope `ActivityScoped`, since this is a subcomponent we need a `@Subcomponent.Factory` just like we did with the singleton component.
+now this time we annotate it with `@Subcomponent` and annotate it with our own scope `ActivityScoped`.
+Since this is a subcomponent we need a `@Subcomponent.Factory` just like we did with the singleton component (there it was a Component.Factory).
 ```kotlin
 @Subcomponent
 @ActivityScoped
@@ -203,9 +204,10 @@ interface ActivityComponent {
 ```
 
 The main idea here is that the `SingletonComponent` is the parent and `ActivityComponent` is it's child.
+
 We have to make sure of that, now inside our `SingletonComponent` we provide the factory that creates `ActivityComponent`.
 
-Since we mentioned that `ActivityComponent` is a child, that means every module and instance annotated with `@BindsInstance` would be available inside the `ActivityComponent` as well, since it's like `ActivityComponent` inherited from `SingletonComponent` and everything annotated with `@BindsInstance` is available to play with even as a child.
+`ActivityComponent` is a child, that means every module and instance annotated with `@BindsInstance` would be available inside the `ActivityComponent` as well, since it's like `ActivityComponent` inherited the public variables from `SingletonComponent` that were annotated with `@BindsInstance`.
 
 ```kotlin
 @Component
@@ -242,11 +244,11 @@ class MainActivity : AppCompatActivity() {
     }
 }
 ```
-When we run the app we can see that it successfully loads and works
+When we run the app we can see that we're suffering from success.
 
 <img src="/assets/img/dagger/5/2.png" class="center">
 
-For demonstrational purposes, we want to have `savedInstanceState: Bundle?` as a runtime variable and the `intent` within the `ActivityScoped` instances, we go and change the ActivityComponent's subcomponent factory
+For demonstrational purposes, we want to have `savedInstanceState: Bundle?` as a runtime variable and the `intent` within the `ActivityScoped` instances, change the `ActivityComponent's` *subcomponent factory*
 
 ```kotlin
 @Subcomponent.Factory
@@ -261,8 +263,8 @@ override fun onCreate(savedInstanceState: Bundle?) {
     (application as DaggerIsEasyApplication).applicationComponent.activityComponentFactory().create(savedInstanceState, intent).also {it.inject(this)}
 ```
 
-Let's say we have a class `IntentHandler` that comes from a library that we didn't create,
-and we include it as an implementation, now that class receives an `Intent` param.
+Let's pretend that we have a class `IntentHandler` coming from a library that we didn't create,
+and we included it as an implementation, that class receives an `Intent` param.
 ```kotlin
 class IntentHandler(private val intent: Intent) {
 
@@ -277,7 +279,7 @@ class IntentHandler(private val intent: Intent) {
 }
 ```
 
-since we don't own that class, we have to create a module and make Dagger aware of it.
+since we don't own that class, we have to create a module and make Dagger be aware of it.
 
 ```kotlin
 @Module
@@ -287,7 +289,7 @@ object ActivityModule {
     fun intentHandler(intent: Intent) = IntentHandler(intent)
 }
 ```
-we have to use `@Provides` since the code is coming from outside of our own project, otherwise we could've
+we use `@Provides` since the code is coming from outside of our own project, otherwise we could've
 just annotated the class with `@ActivityScoped` and `@Inject constructor()` and voila.
 
 However can do the following for example:
@@ -300,9 +302,9 @@ class Bundler @Inject constructor(private val savedInstanceState: Bundle?) {
     }
 }
 ```
-since we provided the runtime argument of `savedInstanceState: Bundle?` using `@BindsInstance`, now we can play with it.
+we've already provided the runtime argument of `savedInstanceState: Bundle?` using `@BindsInstance`, now we can play with it.
 
-Now our activity looks like:
+Our activity looks like:
 ```kotlin
 class MainActivity : AppCompatActivity() {
 
@@ -347,7 +349,7 @@ inline fun AppCompatActivity.injector(action: SingletonComponent.() -> Unit) {
 ```
 <img src="/assets/img/dagger/5/3.png" class="center">
 
-now we can enjoy a bit tidier code, even tidier when we'll start using *Hilt* in the future articles. 
+let's enjoy a bit tidier code, even tidier when we'll start using *Hilt* in the future articles. 
 
 Some might argue that you'll replace vanilla Dagger completely, well... not quite, inside feature modules you'll still need to know the concepts (especially factories and components) of pure Dagger, because Hilt doesn't entirely replace Dagger, it's built on top of Dagger to abstract away the Android's runtime boilerplate setup that you have to do every time you create a new project.
 

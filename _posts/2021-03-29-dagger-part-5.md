@@ -11,7 +11,7 @@ In the [previous](/posts/dagger-part-4/) post we've explored scope operators.
 
 In this post we'll encounter subcomponents and their hierarchy, custom scopes and let's not waste any time.
 
-Starting off by including the shared androidx.preferences library
+Starting off by including the androidx.preferences library
 ```kotlin
 implementation 'androidx.preference:preference-ktx:1.1.1'
 ```
@@ -107,7 +107,7 @@ We've learnt about a new citizen in the Dagger world
 a factory has to create our component, because our component needs a parameter
 in this case a *Context*, in order to create our **SharedPreferencesManager**, because Dagger doesn't know how to get a *Context* we have to provide it to Dagger ourselves.
 
-Inside we have an interface which is essentially our factory and one function important function called `create` which returns (creates) the `SingletonComponent` but with a parameter of the type we wanted, in our case a `Context`.
+Inside we have an interface which is essentially our factory and one important function called `create`, which returns (creates) the `SingletonComponent` but with a parameter of the type we wanted, in our case a `Context`.
 
 Also there's `@BindsInstance`, this annotation knows about the type of the parameter in our case `Context` and later on whenever we request this `Context` within our `@Singleton` scope we'll have it provided to us by Dagger we don't have to do anything else (because this runtime variable is tied to the component's scope that binds it, in our case *SingletonComponent* and it's children, more about that later on).
 
@@ -207,7 +207,7 @@ The main idea here is that the `SingletonComponent` is the parent and `ActivityC
 
 We have to make sure of that, now inside our `SingletonComponent` we provide the factory that creates `ActivityComponent`.
 
-`ActivityComponent` is a child, that means every module and instance annotated with `@BindsInstance` would be available inside the `ActivityComponent` as well, since it's like `ActivityComponent` inherited the public variables from `SingletonComponent` that were annotated with `@BindsInstance`.
+`ActivityComponent` is a child, that means every module we include in the `SingletonComponent` and instance annotated with `@BindsInstance` would be available inside the `ActivityComponent` as well, since it's like `ActivityComponent` inherited the public variables from `SingletonComponent` that were annotated with `@BindsInstance`.
 
 ```kotlin
 @Component

@@ -25,7 +25,7 @@ class DaggerIsEasyApplication : Application() {
     }
 }
 ```
-Let's create a simple shared preference manager that'll hide most of the logic
+Create a simple shared preference manager that'll hide most of the logic
 ```kotlin
 @Singleton
 class SharedPreferencesManager @Inject constructor(context: Context) {
@@ -43,7 +43,7 @@ class SharedPreferencesManager @Inject constructor(context: Context) {
 }
 ```
 
-Let's annotate it with the scope `@Singleton` because this instance needs to be alive for the app's lifetime since that's when we'll create the graph.
+Annotate it with the scope `@Singleton` because this instance needs to be alive for the app's lifetime since that's when we'll create the graph.
 
 The second thing we do is create our component and we do the following
 ```kotlin

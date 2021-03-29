@@ -9,15 +9,14 @@ tags: [Dagger, Kotlin, Android]
 
 In the [previous](/posts/dagger-part-4/) post we've explored scope operators.
 
-In this example we'll encounter a real life example and touch subcomponents.
+In this post we'll encounter subcomponents and their hierarchy, custom scopes and let's not waste any time.
 
-Let's include the shared preferences library
+Let's start by including the shared androidx.preferences library
 ```kotlin
 implementation 'androidx.preference:preference-ktx:1.1.1'
 ```
 
-We've deleted all the data from the previous parts and we'll start on the fresh side,
-we've only left the **MainActivity** and renamed our **TestApplication** to 
+Let's delete all the classes from previous posts and remove all of the code within **MainActivity** also rename **TestApplication** to 
 ```kotlin
 class DaggerIsEasyApplication : Application() {
 
@@ -26,7 +25,7 @@ class DaggerIsEasyApplication : Application() {
     }
 }
 ```
-We want to create a simple shared preference manager that'll hide most of the logic, so we go ahead and create a class
+Let's create a simple shared preference manager that'll hide most of the logic
 ```kotlin
 @Singleton
 class SharedPreferencesManager @Inject constructor(context: Context) {
@@ -44,9 +43,9 @@ class SharedPreferencesManager @Inject constructor(context: Context) {
 }
 ```
 
-We annotate it with the scope `@Singleton` because we want this instance to be alive for the app's lifetime since that's when we'll create the graph.
+Let's annotate it with the scope `@Singleton` because this instance needs to be alive for the app's lifetime since that's when we'll create the graph.
 
-The second thing we need to do is create our component and we do the following
+The second thing we do is create our component and we do the following
 ```kotlin
 @Component
 @Singleton
@@ -84,13 +83,13 @@ class DaggerIsEasyApplication : Application() {
     }
 }
 ```
-If we click compile this will go ahead and compile but there's one big issue, when we run the app we get something like 
+If we click compile, this will go ahead and compile but there's one big issue, when we run the app we get something like 
 ```kotlin
 error: [Dagger/MissingBinding] android.content.Context cannot be provided without an @Provides-annotated method.
 public abstract interface SingletonComponent
 ```
 
-that's because we need a **Context** in our **SharedPreferencesManager**, we have to do the following changes in our SingletonComponent
+that's because we need a **Context** in our **SharedPreferencesManager**, let's to do the following changes in our SingletonComponent
 ```kotlin
 @Component
 @Singleton
@@ -103,16 +102,18 @@ interface SingletonComponent {
     fun provideGraphInside(application: DaggerIsEasyApplication)
 }
 ```
-We're learning about a new citizen in the Dagger world
+We've learnt about a new citizen in the Dagger world
 `@Component.Factory`
 a factory has to create our component, because our component needs a parameter
 in this case a *Context*, in order to create our **SharedPreferencesManager**, because Dagger doesn't know how to get a *Context* we have to provide it to Dagger ourselves.
 
 Inside we have an interface which is essentially our factory and one function that has one important function called `create` which returns (creates) the `SingletonComponent` but with a parameter of the type we wanted, in our case a `Context`.
 
-Also we see that we have `@BindsInstance`, this annotation knows about the type of the parameter in our case `Context` and later on whenever we request this context within our `@Singleton` scope we'll have it provided to us by Dagger (because this runtime variable is tied to the component's scope that binds it, in our case SingletonComponent), we don't have to do anything else, as I mentioned earlier, Dagger would be totally easier without Android's runtime, but here `Context` is a runtime variable which is available once the app's started and that's what complicates things.
+Also there's `@BindsInstance`, this annotation knows about the type of the parameter in our case `Context` and later on whenever we request this `Context` within our `@Singleton` scope we'll have it provided to us by Dagger we don't have to do anything else (because this runtime variable is tied to the component's scope that binds it, in our case *SingletonComponent*).
 
-Now for the most important part, we have to create the component with a runtime variable,
+As I mentioned earlier, Dagger would be far easier without Android's runtime, but `Context` is a runtime variable which is available once the app's started and that's what complicates things.
+
+Now for the most important part, let's create the component with a runtime variable,
 inside *DaggerIsEasyApplication* and after `onCreate()` just right before the `super` call
 ```kotlin
     override fun onCreate() {
@@ -125,11 +126,11 @@ inside *DaggerIsEasyApplication* and after `onCreate()` just right before the `s
         }
     }
 ```
-now if we launch the application, we can see the log
+now when we launch the application, we can see the log
 
 <img src="/assets/img/dagger/5/1.png" class="center">
 
-if we rerun the app, we won't see the log because we've set it already.
+when we rerun the app, we won't see the log because we've set it already.
 
 Let's say we wanted to get that same **SharedPreferencesManager** in our `MainActivity`
 ```kotlin
@@ -150,12 +151,12 @@ class MainActivity : AppCompatActivity() {
     }
 }
 ```
-we run the code and it crashes
+let's run the code and see it crash
 ```kotlin
 Caused by: kotlin.UninitializedPropertyAccessException: lateinit property sharedPreferencesManager has not been initialized
 ```
 
-The first thing that we need to do is make our `ApplicationComponent` available to do more than one thing, so we expose it as a variable that we initialize with our `create(this)` and we also provideGraphInside the application level.
+The first thing that we need to do is make our `ApplicationComponent` available to do more than one thing, so we expose it as a variable that we initialize with our `create(this)` and we also `provideGraphInside` the application level.
 ```kotlin
 class DaggerIsEasyApplication : Application() {
 
@@ -176,7 +177,7 @@ class DaggerIsEasyApplication : Application() {
     }
 }
 ```
-Now our `SingletonComponent` is a `@Singleton` scoped, that means we've gotta come with our own scoping if we need something inside an *Activity*, so we create our own.
+Now `SingletonComponent` is a `@Singleton` scoped, that means we've gotta come with our own scoping if we need something inside an *Activity*, so we go ahead and create our own.
 
 ```kotlin
 @Scope
@@ -185,7 +186,7 @@ Now our `SingletonComponent` is a `@Singleton` scoped, that means we've gotta co
 annotation class ActivityScoped
 ```
 
-as we know that we need an Activity component as well, we might as well create one too,
+as we know that we need an Activity component as well, we create one too,
 now this time we annotate it with `@Subcomponent` and our own scope `ActivityScoped`, since this is a subcomponent we need a `@Subcomponent.Factory` just like we did with the singleton component.
 ```kotlin
 @Subcomponent
@@ -201,7 +202,8 @@ interface ActivityComponent {
 }
 ```
 
-The main idea here is that the `SingletonComponent` is the parent and `ActivityComponent` is it's child, so we have to make sure of that, now inside our `SingletonComponent` we need to provide the factory that creates `ActivityComponent`.
+The main idea here is that the `SingletonComponent` is the parent and `ActivityComponent` is it's child.
+We have to make sure of that, now inside our `SingletonComponent` we provide the factory that creates `ActivityComponent`.
 
 Since we mentioned that `ActivityComponent` is a child, that means every module and instance annotated with `@BindsInstance` would be available inside the `ActivityComponent` as well, since it's like `ActivityComponent` inherited from `SingletonComponent` and everything annotated with `@BindsInstance` is available to play with even as a child.
 
@@ -217,7 +219,7 @@ interface SingletonComponent {
     fun provideGraphInside(application: DaggerIsEasyApplication)
 }
 ```
-the last thing we need to do is call the creation, that happens inside our `MainActivity` right before `onCreate()`, just like in our Application.
+the last thing we do is call the creation, that happens inside our `MainActivity` right before `onCreate()`, just like in our Application.
 ```kotlin
 class MainActivity : AppCompatActivity() {
 
@@ -240,11 +242,11 @@ class MainActivity : AppCompatActivity() {
     }
 }
 ```
-If we run the app we can see that it successfully loads and works
+When we run the app we can see that it successfully loads and works
 
 <img src="/assets/img/dagger/5/2.png" class="center">
 
-For demonstrational purposes, let's say that we want to have `savedInstanceState: Bundle?` as a runtime variable and the `intent` within the `ActivityScoped` instances, we go and change the ActivityComponent's subcomponent factory
+For demonstrational purposes, we want to have `savedInstanceState: Bundle?` as a runtime variable and the `intent` within the `ActivityScoped` instances, we go and change the ActivityComponent's subcomponent factory
 
 ```kotlin
 @Subcomponent.Factory
@@ -260,7 +262,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 ```
 
 Let's say we have a class `IntentHandler` that comes from a library that we didn't create,
-and we include it as an implementation, now that class receives an `Intent` param
+and we include it as an implementation, now that class receives an `Intent` param.
 ```kotlin
 class IntentHandler(private val intent: Intent) {
 
@@ -275,7 +277,7 @@ class IntentHandler(private val intent: Intent) {
 }
 ```
 
-since we don't own that class, we have to create a module.
+since we don't own that class, we have to create a module and make Dagger aware of it.
 
 ```kotlin
 @Module
@@ -285,7 +287,7 @@ object ActivityModule {
     fun intentHandler(intent: Intent) = IntentHandler(intent)
 }
 ```
-we have to use `@Provides` since the code is coming from outside our own project, otherwise we could've
+we have to use `@Provides` since the code is coming from outside of our own project, otherwise we could've
 just annotated the class with `@ActivityScoped` and `@Inject constructor()` and voila.
 
 However can do the following for example:
@@ -300,7 +302,7 @@ class Bundler @Inject constructor(private val savedInstanceState: Bundle?) {
 ```
 since we provided the runtime argument of `savedInstanceState: Bundle?` using `@BindsInstance`, now we can play with it.
 
-Now our activity will look like:
+Now our activity looks like:
 ```kotlin
 class MainActivity : AppCompatActivity() {
 
@@ -337,7 +339,7 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-Let's tidy up the tings a little bit, let's create a file called `DaggerExtensions` and inside
+Let's tidy up the tings a little bit, create a file called `DaggerExtensions` and inside
 ```kotlin
 inline fun AppCompatActivity.injector(action: SingletonComponent.() -> Unit) {
     (application as DaggerIsEasyApplication).applicationComponent.action()

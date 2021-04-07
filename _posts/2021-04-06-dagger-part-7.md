@@ -55,7 +55,7 @@ interface SingletonComponent
 
 Create an interface called `TestApi`
 ```kotlin
-interface TestApi {S
+interface TestApi {
 
 
     @GET("posts")

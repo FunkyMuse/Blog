@@ -258,7 +258,7 @@ accepts set of interceptors from other Dagger module (`InterceptorsModule`) but 
 2. The java code looks like `Set<? extends Interceptor>` where as you know `?` is a [wild card](https://docs.oracle.com/javase/tutorial/extra/generics/wildcards.html), Dagger gets confused
 3. If we add `@JvmSuppressWildcards` that generated code gets transformed into `Set<Interceptor>` and Dagger isn't confused anymore into the Kotlin world.
 
-Now this approach of Set gets to keep your `Interceptor`s into a separate module and this scales really good because all you have to do is include a parameter of Set in your function that provides a dependency maybe coming from a module that you once wrote and reused at multiple times with other modules that our `IntereceptorsModule`.
+Now this approach of Set gets to keep your `Interceptor`s into a separate module and this scales really good because all you have to do is include a parameter of Set in your function that provides a dependency maybe coming from a module that you once wrote and reused at multiple times with other modules than our `IntereceptorsModule`.
 
 
 ## Map

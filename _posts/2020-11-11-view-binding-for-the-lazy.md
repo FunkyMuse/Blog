@@ -84,15 +84,17 @@ fun <T : ViewBinding> AppCompatActivity.viewBinding(
         beforeSetContent: () -> Unit = {}) =
         ActivityViewBindingDelegate(this, bindingInflater, beforeSetContent)
 ```
-Okay then, we have almost the same logic, except this time it ain't an inline function and there's another beforeSetContent function and another class ActivityViewBindingDelegate, let's jump to it.
+Okay then, we have almost the same logic, except this time it ain't an inline function and there's another beforeSetContent function and another class `ActivityViewBindingDelegate`, let's jump to it.
 
 This class is a really simple class, it leverages Kotlin's delegates
 
+```kotlin
 class ActivityViewBindingDelegate<T : ViewBinding>(
         private val activity: AppCompatActivity,
         private val viewBinder: (LayoutInflater) -> T,
         private val beforeSetContent: () -> Unit = {}
 ) : ReadOnlyProperty<AppCompatActivity, T>, LifecycleObserver
+```
 
 It has a generic of a view binding type and generally identical parameters as the function above and instead of an extension function our AppCompatActivity is a the type of object which owns the property that's delegated, in our case the ViewBinding.
 ```kotlin
@@ -189,10 +191,11 @@ C'mon man, already... it was supposed to be simple, it isn't..... not yet.
 We have to ensure access only on the main thread and then do initialization phase in case it's a null (process death enters the chat).
 
 and now we can do 
-
+```kotlin
 private val activityMainBinding by viewBinding(ActivityMainBinding::inflate) {
     //initialize Dagger voodoo or something else before setContentView
 }
+```
 
 with just one (almost one if you don't do dagger initialization or something else you can omit the '{}')
  
@@ -361,7 +364,7 @@ But wait, there's more.
 
 You wanted to do dispose events, clean ups.
 
-If you try onDestroyView() or onDestroy() you'll get IllegalStateException that views are destroyed and you'll think onPause and onStop are the perfect place to do disposes, they are but not quite your use case?
+If you try `onDestroyView()` or `onDestroy()` you'll get IllegalStateException that views are destroyed and you'll think onPause and onStop are the perfect place to do disposes, they are but not quite your use case?
 
 Hey, we got that case covered
 

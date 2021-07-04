@@ -12,23 +12,25 @@ tags: [Gradle]
 ---
 Hello fellow Gradle user, you've probably copy pasted the configuration in every module you've had, no worries, today you'll forget copy pasting most of the code in the gradle configuration.
 
-One day you woke up and chose violence, copy pasting the same thing over and over again in every `build.gradle` file you had for every module.
+Gradle is slow we get that, but building multi modules helps that, since gradle rebuilds only the modules affected of changes.
 
-You decided to create a module (hope this post doesn't offend your ego)
+One day you woke up and chose violence, copy pasting the same config over and over again in every `build.gradle` file you had for every new module you created.
+
+You decided to create a new module (hope this post doesn't hurt your ego)
 
 <img src="/assets/img/gradle_abstraction/1.png" class="center">
 
 then another module
 <img src="/assets/img/gradle_abstraction/2.png" class="center">
 
-and you had to duplicate this in every gradle file, you hated your life because Gradle doesn't simplify this out of the box, but don't worry, we all hate gradle because it's complicated for no reason.
+and you had to duplicate this in every gradle file, you hated your life because *Gradle* doesn't simplify this out of the box, but don't worry, we all hate *Gradle* because it's complicated for no reason and a build system shouldn't be, but hey, maybe *Bazel* will get more attention in the future.
 
 ## Solution
 ---
 
-One day I woke up mad and decided to live up to my motto, "a good programmer doesn't use write the same code twice", in this case I didn't want to write the same Gradle config twice, so I chose to fight.
+One day I woke up mad (it was a Tuesday, doing a code review to myself, hope i'm not the only one doing this to himself) and decided to live up to my motto, "a good programmer doesn't write the same code twice", in this case I didn't want to write the same Gradle config twice, so I chose to fight.
 
-Then in my project `build.gradle` I chose peace
+Then in my project `build.gradle` I chose *peace*
 
 ```groovy
 subprojects {
@@ -169,6 +171,9 @@ some of your feature `build.gradle` modules will look really short
 You can check this approach in my other open source [project](https://github.com/FunkyMuse/Aurora/blob/main/build.gradle).
 
 You can go forward and do many more of these abstractions and forget about copy pasting gradle config once and for all.
+
+
+## Goodbye
 
 Don't forget to drink water, it's summer and it's hot.
 

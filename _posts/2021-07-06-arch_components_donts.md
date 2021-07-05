@@ -241,7 +241,7 @@ class MovieFragment : Fragment(){
 
 ```
 
-🚫 Don't expose `Mutable` data holder to the `Fragment`, if you're using two-way binding with data-binding, then stop using data-binding and use view-binding, this is a harsh statement but just don't use `data-binding`
+🚫 Don't expose `Mutable` data holder to the `Fragment`, if you're using two-way binding with data-binding, then stop using data-binding and use view-binding, this is a harsh and direct statement but just don't use `data-binding`, if `data-binding` was a great solution there wouldn't be a code pollution and `view-binding` as a replacement, `data-binding` also breaks `SOLID` too.
 
 ✅ Expose an immutable data holder
 

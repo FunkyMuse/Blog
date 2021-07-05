@@ -42,7 +42,7 @@ Google's lint forces you to use `getViewLifecycleOwner()`, because if you're usi
 ## Observing flows in launchWhenX
 ---
 
-Coroutines were pushed as a replacement for `LiveData` but there wasn't something that'll clear up the references.
+Coroutines `StateFlow` and `SharedFlow`, were pushed as a replacement for `LiveData` but there wasn't something that'll clear up the references when using `launchWhenX`
 
 You decided to get rid of LiveData and you started using `viewLifeCycleOwner.lifecycleScope.launchWhenResumed` or `viewLifeCycleOwner.lifecycleScope.launchWhenStarted` to ensure that a given coroutine runs only in that specific lifecycle state, there's a [deep dive article worth reading](https://medium.com/swlh/deep-dive-into-lifecycle-coroutines-e7192312faf#7d09) why that's the thing you shouldn't use.
 
@@ -154,7 +154,7 @@ class DetailedMovieFragment : Fragment(R.layout.fragment_detailed_movie){
 }
 ```
 
-🚫 Don't call the function to fetch the data in  `onViewCreated` nor in `onCreateView` nor anywhere inside the `Fragment` unless it's an action that's triggered by the user input.
+🚫 Don't call the function to fetch the data in  `onViewCreated` nor in `onCreateView` nor anywhere inside the `Fragment` unless it's an action that's triggered by a user input or action.
 
 ✅ Use the `init` function inside the `ViewModel`, that's called only once when the `ViewModel` is created.
 
@@ -181,7 +181,7 @@ var data : MutableStateFlow<DetailedMovieModel?> = MutableStateFlow(null)
 
 ✅ Use `val`.
 
-You're creating unnecessary getter for the data holder, if `MutableLiveData` was a variable you could've just assigned the value to it directly without using `.value` or `postValue()`.
+You're creating unnecessary getter and setter for the data holder, if `MutableLiveData` was a variable you could've just assigned the value to it directly without using `.value` or `postValue()`.
 
 ### Exposing mutable data holder instead of immutable
 
@@ -243,7 +243,7 @@ class MovieFragment : Fragment(){
 
 ```
 
-🚫 Don't expose `Mutable` data holder to the `Fragment`, if you're using two-way binding with data-binding, then stop using data-binding and use view-binding, this is a harsh and direct statement but just don't use `data-binding`, if `data-binding` was a great solution there wouldn't be a code pollution and `view-binding` as a replacement, `data-binding` also breaks `SOLID` too.
+🚫 Don't expose `Mutable` data holder to the `Fragment`, if you're using two-way binding with `data-binding`, then stop using `data-binding` and use `view-binding`, this is a harsh and direct statement but just don't use `data-binding`, if `data-binding` was a great solution there wouldn't be a code pollution and `view-binding` wouldn't have appeared as a replacement, `data-binding` also breaks `SOLID`.
 
 ✅ Expose an immutable data holder.
 
@@ -290,7 +290,7 @@ private val movieData : MutableStateFlow<DetailedMovieModel?> = MutableStateFlow
 val movie get() = movieData.asStateFlow()
 ```
 
-Kotlin docs just point it out for you
+Kotlin docs just for the rescue
 
 > If you define a custom getter, it will be called every time you access the property (this way you can implement a computed property)
 
@@ -447,7 +447,7 @@ mailboxViewModel.hasSuccessfullyDeletedMessages.observe(
 
 <img src="/assets/img/arch_components_mistakes/least.gif" class="center">
 
-After some time Google came up with a hack solution to use `Event`
+After some time Google came up with a hacky solution to use a nightmare called `Event`
 
 ```kotlin
 class Event<out T>(private val content: T) {
@@ -472,7 +472,9 @@ class Event<out T>(private val content: T) {
 }
 ```
 
-Which you need to use `getContentIfNotHandled()` first in order to see if the content is consumed, I just deleted that thing and went to use a `Channel`
+In order to use the event, you need to `getContentIfNotHandled()` first in order to see if the content is consumed, I just deleted that thing and went to use a `Channel`.
+
+Keep it simple, stupid.
 
 🚫 Do not use `MutableLiveData` or flow to show a `Toast` a `SnackBar` or even worse a `Dialog` or something that'll just spam the user endlessly.
 
@@ -483,4 +485,4 @@ This post is more like a rant, hope your ego isn't hurt so far and you learnt to
 
 <img src="/assets/img/arch_components_mistakes/2.jpg" class="center">
 
-Thanks for reading and not getting hurt.
+Thanks for reading and not getting hurt (hopefully).

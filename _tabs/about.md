@@ -1,7 +1,7 @@
 ---
 title: About
 icon: fas fa-info
-order: 5
+order: 6
 ---
 
 Hello there stranger,<br/>

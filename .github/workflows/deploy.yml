@@ -13,7 +13,7 @@ jobs:
 
       - uses: actions/setup-ruby@v1
         with:
-          ruby-version: 3.0
+          ruby-version: 2.7.x
 
       - uses: actions/cache@v2
         id: bundle-cache
